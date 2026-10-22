@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch a Star ✦</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Poppins:wght@300;400;500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  color: #fff8e8;
+  font-family: 'Poppins', sans-serif;
+  background-color: #090b20;
+}
+
+/* Magical galaxy background */
+#sky {
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(
+      rgba(5, 7, 24, 0.35),
+      rgba(8, 8, 28, 0.55)
+    ),
+    url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=2200&q=90")
+    center center / cover no-repeat;
+  z-index: 0;
+}
+
+#stars {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: transparent;
+  color: #fff0b5;
+  font-size: 25px;
+  cursor: pointer;
+  pointer-events: auto;
+  filter: drop-shadow(0 0 8px #ffe8a0);
+  animation: twinkle 2s ease-in-out infinite alternate;
+  transition: transform .3s, opacity .3s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.star:hover {
+  transform: scale(1.6) rotate(15deg);
+}
+
+.star.caught {
+  transform: scale(2.8);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes twinkle {
+  from { opacity: .45; }
+  to { opacity: 1; }
+}
+
+/* Main text */
+.content {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.eyebrow {
+  color: #d3c5ff;
+  font-size: 10px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(58px, 10vw, 100px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -2px;
+  text-shadow: 0 0 35px #c3a8ff55;
+}
+
+h1 span {
+  color: #ffe5a2;
+  font-style: italic;
+}
+
+.subtitle {
+  margin-top: 24px;
+  color: #e0def1;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 2;
+  letter-spacing: 1px;
+}
+
+.counter {
+  margin-top: 34px;
+  padding: 12px 20px;
+  border: 1px solid #ffffff45;
+  border-radius: 30px;
+  background: #11142b66;
+  backdrop-filter: blur(8px);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #ffe8b0;
+}
+
+.hint {
+  margin-top: 48px;
+  color: #ded8f6;
+  font-size: 10px;
+  letter-spacing: 3px;
+  animation: breathe 2.5s infinite;
+}
+
+@keyframes breathe {
+  50% { opacity: .4; }
+}
+
+/* Message popup */
+#messageBox {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: #050617a8;
+  backdrop-filter: blur(9px);
+}
+
+#messageBox.show {
+  display: flex;
+  animation: appear .35s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.card {
+  width: min(100%, 370px);
+  padding: 42px 28px;
+  text-align: center;
+  border: 1px solid #e8d49a66;
+  border-radius: 25px;
+  background: linear-gradient(145deg, #292443, #101329);
+  box-shadow: 0 0 70px #a59aff35;
+  animation: floatIn .4s ease;
+}
+
+@keyframes floatIn {
+  from { transform: translateY(15px) scale(.95); }
+  to { transform: translateY(0) scale(1); }
+}
+
+.card-star {
+  font-size: 44px;
+  margin-bottom: 18px;
+  color: #ffe5a2;
+  filter: drop-shadow(0 0 15px #ffe6a0);
+}
+
+.card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 37px;
+  font-weight: 400;
+  color: #ffe5a2;
+  margin-bottom: 17px;
+}
+
+#message {
+  font-size: 14px;
+  line-height: 2;
+  color: #e4e0f3;
+  font-weight: 300;
+}
+
+.close {
+  margin-top: 28px;
+  padding: 12px 22px;
+  border: 1px solid #ffe5a277;
+  border-radius: 30px;
+  background: transparent;
+  color: #ffe5a2;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.close:hover {
+  background: #ffe5a21a;
+}
+
+.reset {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 3;
+  padding: 11px 15px;
+  border: 1px solid #ffffff55;
+  border-radius: 25px;
+  background: #10132999;
+  color: #fff2d0;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .subtitle { font-size: 11px; }
+  .hint { letter-spacing: 2px; }
+  .eyebrow { letter-spacing: 3px; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="sky"></div>
+<div id="stars"></div>
+
+<main class="content">
+  <p class="eyebrow">A little magic for you</p>
+
+  <h1>Catch a <span>Star.</span></h1>
+
+  <p class="subtitle">
+    Somewhere in this sky, a little message<br>
+    is waiting just for you.
+  </p>
+
+  <div class="counter">
+    ✦ &nbsp; STARS CAUGHT: <span id="count">0</span>
+  </div>
+
+  <p class="hint">✧ CLICK A STAR TO DISCOVER ✧</p>
+</main>
+
+<button class="reset" id="reset">↻ Start again</button>
+
+<div id="messageBox">
+  <div class="card">
+    <div class="card-star">✦</div>
+    <h2>A message for you</h2>
+    <p id="message"></p>
+    <button class="close" id="close">KEEP THE MAGIC ✨</button>
+  </div>
+</div>
+
+<script>
+const sky = document.getElementById('stars');
+const countLabel = document.getElementById('count');
+const messageBox = document.getElementById('messageBox');
+const messageLabel = document.getElementById('message');
+
+const messages = [
+  "I'm really glad you're in my life. ❤️",
+  "I hope today is kind to you, my love. 🤍",
+  "Sometimes I just wish you were here, even when nothing special is happening.",
+  "بحبك يابيتووووووو❤️❤️❤️❤️",
+  "I love telling you about the little things in my day.",
+  "I'm proud of you, even when you don't feel proud of yourself.",
+  "Talking to you is one of my favorite parts of the day. 🥹",
+  "I hope we never stop sharing the little things with each other.",
+  "You make my ordinary days feel a little better.",
+  "I wish I could give you a hug whenever life feels heavy.",
+  "I love seeing you happy. It makes me happy, too.",
+  "You never have to pretend to be okay with me.",
+  "Sometimes you make me smile at my phone for no reason. ❤️",
+  "I can't wait to make more memories with you.",
+  "عقبال ما اشوفك جدو كبير وانا جنبك تيتا❤️💕😘",
+  "I don't need a special moment. I just like being with you.",
+  "I love little things about you that you probably don't even notice.",
+  "I hope talking to me makes your difficult days a little easier.",
+  "غالبا كدا خلاص مبقتش اتخيل يومي من غيرك و لقد وقعنا في الفخ 😁❤️",
+  "I hope we're still laughing at silly things years from now. 🫶🏻",
+  "You cross my mind more often than you probably realize.",
+  "There's always a little space for you in my day.",
+  "I'm always rooting for you, even when things get difficult.",
+  "Sometimes I don't need a conversation. I just want to hear from you.",
+  "I'm grateful for all the little things you do.",
+  "I hope we always make time for each other.",
+  "There's still so much I want to learn about you.",
+  "I wish you could see yourself through my eyes sometimes.",
+  "عمري ما هلاقي حد في حنيتك ولا طيبه قلبك ياحبيبي🤍",
+  "I want to be there for your little wins and your difficult days.",
+  "I look forward to all the places and memories we'll share.",
+  "I love our quiet moments just as much as the exciting ones.",
+  "I hope you always feel safe telling me what's on your mind.",
+  "I hope you feel as loved as you make me feel.",
+  "You mean more to me than I always know how to explain.",
+  "I'm happy it's you, even when life isn't perfect. ❤️",
+  "I hope one day we'll look back and smile at these moments.",
+  "I hope we keep choosing each other, even on ordinary days.",
+  "cant wait to be your future wifeyyyyyy❤️",
+  "I love the little life we're building, one moment at a time.",
+  "I hope I always give you reasons to feel loved and appreciated.",
+  "If I had to choose again, I'd still be happy it was you. 🤍"
+];
+
+let caught = 0;
+let messageIndex = 0;
+
+function createStars() {
+
+function makeSparkles(x, y) {
+  for (let i = 0; i < 12; i++) {
+    const particle = document.createElement('span');
+
+    particle.textContent = '✦';
+    particle.style.position = 'fixed';
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.color = '#ffe5a2';
+    particle.style.fontSize = '14px';
+    particle.style.pointerEvents = 'none';
+    particle.style.zIndex = '10';
+    particle.style.textShadow = '0 0 12px #ffd76a';
+
+    document.body.appendChild(particle);
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 35 + Math.random() * 65;
+
+    const endX = Math.cos(angle) * distance;
+    const endY = Math.sin(angle) * distance;
+
+    particle.animate([
+      {
+        transform: 'translate(0, 0) scale(1)',
+        opacity: 1
+      },
+      {
+        transform: `translate(${endX}px, ${endY}px) scale(0)`,
+        opacity: 0
+      }
+    ], {
+      duration: 700 + Math.random() * 300,
+      easing: 'ease-out'
+    });
+
+    setTimeout(() => particle.remove(), 1100);
+  }
+}
+
+  sky.innerHTML = '';
+  caught = 0;
+  countLabel.textContent = caught;
+
+  const total = window.innerWidth < 600 ? 24 : 42;
+
+  for (let i = 0; i < total; i++) {
+    const star = document.createElement('button');
+
+    star.className = 'star';
+    star.textContent = Math.random() > 0.7 ? '✧' : '✦';
+    star.setAttribute('aria-label', 'Catch a star');
+
+    star.style.left = (2 + Math.random() * 94) + '%';
+    star.style.top = (2 + Math.random() * 92) + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.animationDuration =
+      (1.5 + Math.random() * 2) + 's';
+    star.style.fontSize =
+      (16 + Math.random() * 16) + 'px';
+
+    star.addEventListener('click', () => {
+      if (star.classList.contains('caught')) return;
+      makeSparkles(
+  star.getBoundingClientRect().left + star.offsetWidth / 2,
+  star.getBoundingClientRect().top + star.offsetHeight / 2
+);
+
+      star.classList.add('caught');
+
+      caught++;
+      countLabel.textContent = caught;
+
+      messageLabel.textContent =
+        messages[messageIndex % messages.length];
+
+      messageIndex++;
+
+      if (caught === 10) {
+        messageLabel.textContent =
+          "You caught 10 stars! ✨ Maybe the universe has something beautiful planned for you.";
+      }
+
+      if (caught === total) {
+        setTimeout(() => {
+          messageLabel.textContent =
+            "You caught every star in the sky! You made your own little universe. Keep shining. ♡";
+          messageBox.classList.add('show');
+        }, 400);
+      }
+
+      messageBox.classList.add('show');
+    });
+
+    sky.appendChild(star);
+  }
+}
+
+document.getElementById('close').addEventListener('click', () => {
+  messageBox.classList.remove('show');
+});
+
+messageBox.addEventListener('click', (event) => {
+  if (event.target === messageBox) {
+    messageBox.classList.remove('show');
+  }
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  messageBox.classList.remove('show');
+  createStars();
+});
+
+createStars();
+</script>
+
+</body>
+</html>
+
